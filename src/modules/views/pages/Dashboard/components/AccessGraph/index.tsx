@@ -2,9 +2,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import React from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { IUser } from '../types/types';
 
 interface IGraph {
-  user: any,
+  user: IUser,
   handleCloseAccessModal: () => void
 }
 const useStyles = makeStyles({
@@ -27,7 +28,6 @@ const useStyles = makeStyles({
 });
 
 export const AccessGraph = ({ user, handleCloseAccessModal }: IGraph) => {
-  console.log(user)
   const classes = useStyles();
   return (
     <div className={classes.container}>

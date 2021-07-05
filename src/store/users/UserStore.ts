@@ -8,9 +8,10 @@ import {
     runInAction,
     toJS
   } from "mobx";
+import { ISortConfig, IUser } from '../../modules/views/pages/Dashboard/components/types/types';
   
   class UserStore {
-    users: any = [];
+    users: IUser[] = [];
   
     constructor() {
       makeObservable(this, {
@@ -29,8 +30,8 @@ import {
       return this.users.length;
     }
 
-    sortUsers(sortConfig: any) {
-    this.users = this.users.slice().sort((a: any, b: any) => {
+    sortUsers(sortConfig: ISortConfig) {
+    this.users = this.users.slice().sort((a, b) => {
          
         if (a[sortConfig?.key] < b[sortConfig?.key]) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
@@ -44,21 +45,21 @@ import {
       return toJS(this.users)
     }
 
-    setUsers(users: any) {
+    setUsers(users: IUser[]) {
       this.users = users
     }
   
   
-    editUser(userId: any, userUpdated: any) {
-      const userIndexAtId = this.users.findIndex((user: any) => user.id === userId);
+    editUser(userId: string, userUpdated: IUser) {
+      const userIndexAtId = this.users.findIndex((user) => user.id === userId);
       if (userIndexAtId > -1 && userUpdated) {
         this.users[userIndexAtId] = userUpdated;
         return this.users[userIndexAtId];
       }
     }
   
-    deleteUser(userId: any) {
-      const userIndexAtId = this.users.findIndex((user: any) => user.id === userId);
+    deleteUser(userId: string) {
+      const userIndexAtId = this.users.findIndex((user) => user.id === userId);
       if (userIndexAtId > -1) {
         this.users.splice(userIndexAtId, 1);
       }

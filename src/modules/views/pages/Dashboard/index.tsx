@@ -20,6 +20,8 @@ import ModalEdit from '../Dashboard/components/modalEdit'
 import { AccessGraph } from './components/AccessGraph';
 import {Graphs} from './components/Graphs'
 import { observer } from "mobx-react-lite";
+import UserStore from '../../../../store/users/UserStore';
+import { IUser } from './components/types/types';
 
 const useStyles = makeStyles({
   table: {
@@ -46,10 +48,10 @@ const useStyles = makeStyles({
   }
 });
 
-const Dashboard = ({store}: any) => {
+const Dashboard = (store: {store:  UserStore}) => {
   const classes = useStyles();
   const config = {key: "name", direction: "ascending"}
-  const { requestSort, sortConfig } = useSortableData(store,config);
+  const { requestSort, sortConfig } = useSortableData(store.store,config);
   const getSort = (field: string) => {
     if (!sortConfig) {
       return;
@@ -89,13 +91,16 @@ const Dashboard = ({store}: any) => {
       user.createdAt.toLowerCase().includes(searchText.toLowerCase()) ||
       user.email.toLowerCase().includes(searchText.toLowerCase())
     )
-    store.users = usersFiltered
+    store.store.users = usersFiltered
   }
 
-  const [isModalOpen, setModalOpen] = useState(false)
-  const [user, setUser] = useState({})
+  const initialState = {id: "", name: "", lastName: "", address: "", createdAt: "", email: "", access: []}
 
-  const editUser = (user: any) => {
+
+  const [isModalOpen, setModalOpen] = useState(false)
+  const [user, setUser] = useState<IUser>(initialState)
+
+  const editUser = (user: IUser) => {
     setModalOpen(true)
     setUser(user)
   }
@@ -104,20 +109,21 @@ const Dashboard = ({store}: any) => {
     setModalOpen(false)
   }
 
-  const deleteUser = (user: any) => {
-    store.deleteUser(user.id)
+  const deleteUser = (user: IUser) => {
+    store.store.deleteUser(user.id)
   }
 
-  const [isModalOpenAccess, setModalOpenAccess] = useState(false)
-  const [userAccess, setUserAccess] = useState({})
 
-  const handleAccessModal = (user: any) => {
+  const [isModalOpenAccess, setModalOpenAccess] = useState(false)
+  const [userAccess, setUserAccess] = useState<IUser>(initialState)
+
+  const handleAccessModal = (user: IUser) => {
     setUserAccess(user)
     setModalOpenAccess(true)
   }
 
   const handleCloseAccessModal = () => {
-    setUserAccess({})
+    setUserAccess(initialState)
     setModalOpenAccess(false)
   }
 
@@ -154,7 +160,7 @@ const Dashboard = ({store}: any) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {store.users?.map((user: any) => (
+              {store.store.users?.map((user: IUser) => (
                 <TableRow key={user.id}>
                   <TableCell component="th" scope="row">
                     {user.id}
@@ -177,7 +183,7 @@ const Dashboard = ({store}: any) => {
           onClose={handleCloseEditModal}
           className={classes.modalEdit}
         >
-          <ModalEdit store={store} user={user} handleCloseEditModal={handleCloseEditModal} />
+          <ModalEdit store={store.store} user={user} handleCloseEditModal={handleCloseEditModal} />
         </Modal>
 
         <Modal

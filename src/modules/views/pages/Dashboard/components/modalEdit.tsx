@@ -3,8 +3,16 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {useStyles} from './styles'
 import { observer } from "mobx-react-lite";
+import { IUser } from './types/types';
+import UserStore from '../../../../../store/users/UserStore';
 
-const ModalEdit = ({ user, handleCloseEditModal, store }: any) => {
+interface IModalEdit {
+    user: IUser
+    handleCloseEditModal: () => void
+    store: UserStore
+}
+
+const ModalEdit = ({ user, handleCloseEditModal, store }: IModalEdit) => {
     const [name, setName] = useState(user.name)
     const [lastName, setLastName] = useState(user.lastName)
     const [address, setAddress] = useState(user.address)
@@ -18,7 +26,8 @@ const ModalEdit = ({ user, handleCloseEditModal, store }: any) => {
             address,
             createdAt,
             email,
-            id: user.id
+            id: user.id,
+            access: user.access
         };
         store.editUser(userToEdit.id, userToEdit)
         handleCloseEditModal()
